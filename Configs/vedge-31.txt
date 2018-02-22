@@ -1,0 +1,65 @@
+Content-Type: multipart/mixed; boundary="===============8654503100274885143=="
+MIME-Version: 1.0
+
+--===============8654503100274885143==
+Content-Type: text/cloud-config; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="cloud-config"
+
+#cloud-config
+vinitparam:
+ - otp : 3201fe3730215a0b29b2b1cb25e73a96
+ - vbond : 10.91.33.236
+ - uuid : 951374ec-ad6a-49b9-8dc2-91e2c4686a75
+ - org : Cisco Sy1 - 19968
+
+
+--===============8654503100274885143==
+Content-Type: text/cloud-boothook; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+filename="config-52c7911f-c5b0-45df-b826-3155809a2a1a.txt"
+
+#cloud-boothook
+ 
+
+
+!
+
+system
+ host-name               vedge-31
+ system-ip               10.3.0.31
+ site-id                 3
+ organization-name       "Cisco Sy1 - 19968"
+ clock timezone America/Chicago
+ vbond 10.91.33.236
+!
+vpn 0
+ dns 171.70.168.183 primary
+  interface ge0/1
+  description "INET WAN"
+  ip dhcp-client
+  tunnel-interface
+   encapsulation ipsec
+   color biz-internet
+   allow-service all	
+   no allow-service bgp
+   allow-service dhcp
+   allow-service dns
+   allow-service icmp
+   allow-service sshd
+   no allow-service netconf
+   no allow-service ntp
+   no allow-service ospf
+   no allow-service stun
+  !
+  no shutdown
+ !
+!
+
+vpn 512
+ interface eth0
+  ip dhcp-client
+  no shutdown

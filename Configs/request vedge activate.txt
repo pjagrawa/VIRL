@@ -1,0 +1,47 @@
+STEP#1 : on the VIRL server (10.91.33.233) you need to clear the previous stored ssh key when you stop and start the simulation using following commands
+
+ssh-keygen -f "/home/virl/.ssh/known_hosts" -R 172.16.1.11
+ssh-keygen -f "/home/virl/.ssh/known_hosts" -R 172.16.1.12
+ssh-keygen -f "/home/virl/.ssh/known_hosts" -R 172.16.1.21
+ssh-keygen -f "/home/virl/.ssh/known_hosts" -R 172.16.1.22
+ssh-keygen -f "/home/virl/.ssh/known_hosts" -R 172.16.1.31
+ssh-keygen -f "/home/virl/.ssh/known_hosts" -R 172.16.1.41
+ssh-keygen -f "/home/virl/.ssh/known_hosts" -R 172.16.1.5
+ssh-keygen -f "/home/virl/.ssh/known_hosts" -R 172.16.1.6
+
+STEP#2 : from windowds VM, winscp the root-cert-chain to all the vedges
+
+STEP#3 - run the following command on all the vedges
+config
+system organization-name "Cisco Sy1 - 19968"
+commit and-quit
+
+
+STEP#4 Run the following commands one at a time using secueCRT on all vedges (using command window)
+
+1) request root-cert-chain uninstall
+
+2) clear installed-certificates
+ yes
+ 
+3) request root-cert-chain install /home/admin/PJLAB-root-ca-chain.pem
+
+
+STEP#5 - run the following command on respective vedge
+
+vedge11 - request vedge activate chassis-number 8c80da2e-383c-40e7-a94d-aa4fc0a014ac token adbf060188e9174e141d12412510dcb3
+
+vedge12 - request vedge activate chassis-number c5f69083-dd5d-491e-a77d-7b08260b4602 token aa9cf14510ae697ab608219dde3a5dd5
+
+vedge 21 - request vedge activate chassis-number a7b4b61c-d593-431d-aed3-f5c049e63c84 token 51673841d3aa3a672271f8d7f00322b3
+
+vedge 22 - request vedge activate chassis-number ed839df8-e898-4be1-aca3-6e7987dae004 token 885917280d224a515e3f26314195712d
+
+vedge 31 - request vedge activate chassis-number 951374ec-ad6a-49b9-8dc2-91e2c4686a75 token 3201fe3730215a0b29b2b1cb25e73a96
+
+vedge 41 - request vedge activate chassis-number dfbc2df7-428f-41cd-bbb3-775ad308f3c2 token edcc3c26f4cdbb68baf53710e0123667
+
+vedge 51 - request vedge activate chassis-number a23ccbf2-8b93-4e75-983d-ed2eecc1ffab token 6bc3d36a2db9531b4c1e11682eb929cd
+
+vedge 52 - request vedge activate chassis-number ae2e3117-6bc3-48b3-b48c-f8e85c8985e7 token 43f8f92f90abeda635e58b4c04b03847
+

@@ -1,0 +1,170 @@
+!------------------------------------------------------------
+! MPLS Core
+!------------------------------------------------------------
+!
+!
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname Transport-MPLS01
+!
+no aaa new-model
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+cdp timer 5
+cdp holdtime 10
+!
+!
+!------------------------------------------------------------
+! USERS
+!------------------------------------------------------------
+!
+username cisco privilege 15 secret 0 cisco
+enable password cisco
+!
+!
+!
+!------------------------------------------------------------
+! NETFLOW DEFINITION
+!------------------------------------------------------------
+!
+flow record RECORD-STATS
+ match ipv4 dscp
+ match ipv4 protocol
+ match ipv4 source address
+ match ipv4 destination address
+ match transport source-port
+ match transport destination-port
+ match interface input
+ match flow direction
+ collect routing vrf input
+ collect routing next-hop address ipv4
+ collect counter bytes
+!
+!
+flow monitor MONITOR-STATS
+ cache timeout inactive 60
+ cache timeout active 60
+ cache timeout update 1
+ record RECORD-STATS
+!
+!
+!
+!--------------------------------------------------------------------
+! OOB INTERFACE
+!--------------------------------------------------------------------
+!
+interface GigabitEthernet0/0
+ no ip address
+ duplex auto
+ speed auto
+ media-type rj45
+ no shutdown
+!
+!
+!
+!------------------------------------------------------------
+! DATACENTERS
+!------------------------------------------------------------
+!
+interface GigabitEthernet 0/1
+ description R11
+ ip address 172.18.11.2 255.255.255.252
+ no shutdown
+!
+interface GigabitEthernet 0/2
+ description R12
+ ip address 172.18.12.2 255.255.255.252
+ no shutdown
+!
+interface GigabitEthernet 0/3
+ description R21
+ ip address 172.18.21.2 255.255.255.252
+ no shutdown
+!
+interface GigabitEthernet 0/4
+ description R22
+ ip address 172.18.22.2 255.255.255.252
+ no shutdown
+!
+!
+!------------------------------------------------------------
+! BRANCH SITES
+!------------------------------------------------------------
+!
+interface GigabitEthernet 0/5
+ description R31
+ ip address 172.18.31.2 255.255.255.252
+ no shutdown
+!
+interface GigabitEthernet0/6
+ description R41
+ ip address 172.18.41.2 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/7
+ description R51
+ ip address 172.18.51.2 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+!
+!
+!
+!------------------------------------------------------------
+! GATEWAY
+!------------------------------------------------------------
+!
+interface GigabitEthernet0/8
+ description GATEWAY
+ bandwidth 1000000
+ ip address 172.18.100.2 255.255.255.252
+ load-interval 30
+ no shutdown
+!
+!
+!
+!------------------------------------------------------------
+! DEFAULT ROUTE TO VIPTELA CONTROLLERS
+!------------------------------------------------------------
+!
+ip route 0.0.0.0 0.0.0.0 172.18.100.1
+!
+!
+!
+!--------------------------------------------------------------------
+! ALIAS
+!--------------------------------------------------------------------
+!
+alias exec ship show ip int br | ex una
+alias exec desc show int desc | ex admin
+alias exec sri show run | inc
+alias exec srb show run | beg
+alias exec shflow sh flow monitor MONITOR-STATS cache format table
+!
+!
+!
+!------------------------------------------------------------
+! CONSOLE/VTY 
+!------------------------------------------------------------
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line aux 0
+line vty 0 4
+ exec-timeout 720 0
+ password cisco
+ login local
+ transport input telnet ssh
+!
+!
+end
